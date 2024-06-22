@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Bgone</title>
+    <title>Bg Gone</title>
     <link
       rel="stylesheet"
       href="{{url_for('static', filename='styles.css')}}"
@@ -18,8 +18,113 @@
     <main>
       <div id="header-container">
         <h2>Bg Gone</h2>
-        <p>Remove your pesky image background instantly</p>
+        <p>Remove your pesky image background instantly.</p>
+      </div>
+      <div id="dropzone-container">
+        <form
+          id="uploadForm"
+          action="/"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div id="dropzone">
+            <input
+              type="file"
+              id="image-input"
+              accept="image/*"
+              onchange="validateFile(this.files[0])"
+            />
+            <p id="file-label">Drop files here or click to upload</p>
+          </div>
+        </form>
       </div>
     </main>
   </body>
+  <script>
+    const uploadForm = document.getElementById("uploadForm");
+    const dropArea = document.getElementById("dropzone");
+    const fileInput = document.getElementById("image-input");
+    const fileLabel = document.getElementById("file-label");
+
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+      document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+      dropArea.addEventListener(
+        eventName,
+        () => dropArea.classList.add("highlight"),
+        false
+      );
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+      dropArea.addEventListener(
+        eventName,
+        () => dropArea.classList.remove("highlight"),
+        false
+      );
+    });
+
+    dropArea.addEventListener("drop", handleDrop, false);
+    dropArea.addEventListener("click", () => fileInput.click());
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+
+      if (files.length) {
+        const file = files[0];
+        fileInput.files = dt.files;
+        validateFile(file);
+      }
+    }
+
+    function validateFile(file) {
+      if (file) {
+        if (!file.type.startsWith("image/")) {
+          alert("Please select a valid image file.");
+          fileInput.value = "";
+        } else {
+          fileLabel.textContent = `Selected file: ${file.name}`;
+          uploadFile(file);
+        }
+      }
+    }
+    function uploadFile(file) {
+      const formData = new FormData();
+      console.log(file)
+      formData.append("file", file); // Use "file" key to match Flask server
+
+      fetch("/", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          a.download = `bgone_${file.name}`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  </script>
 </html>
