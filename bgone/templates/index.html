@@ -1,30 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>My Website</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <h1>Welcome to My Website</h1>
-    </header>
-
-    <nav>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bgone</title>
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='styles.css')}}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <main>
-        <h2>About Me</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultrices tincidunt, velit nunc tincidunt nunc, at tincidunt justo nisl non nunc.</p>
+      <div id="header-container">
+        <h2>Bg Gone</h2>
+        <p>Remove your pesky image background instantly</p>
+      </div>
     </main>
-
-    <footer>
-        <p>&copy; 2022 My Website. All rights reserved.</p>
-    </footer>
-</body>
+  </body>
 </html>
